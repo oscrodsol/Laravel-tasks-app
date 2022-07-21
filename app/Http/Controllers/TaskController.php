@@ -106,7 +106,7 @@ class TaskController extends Controller
         try {
             Log::info('Delete task with the id ' . $id);
 
-            $task = $task = Task::find($id)->where('id',$id)->where('user_id',$userId);
+            $task = Task::find($id)->where('id',$id)->where('user_id',$userId);
 
             if (!$task) {
                 return response()->json([
@@ -121,12 +121,61 @@ class TaskController extends Controller
                 'success' => true,
                 'message' => 'Task ' . $id . ' deleted successfully'
             ], 200);
-        } catch (\Throwable $th) {
+        } catch (\Exception $exception) {
+            Log::error('Updating task ' . $exception->getMessage());
+
             return response()->json([
                 'success' => false,
                 'message' => 'Error deleting tasks'
             ], 500);
         }
         
+    }
+
+    public function modifyTaskById(Request $request, $id)
+    {
+
+        $userId = auth()->user()->id;
+        try {
+            Log::info("Updating task");
+
+            // $task = Task::find($id)->where('id','=',$id)->where('user_id','=',$userId);
+
+            $task = Task::query()->where('id','=',$id)->where('user_id','=',$userId)->first();
+
+            // dd($task);
+
+            $validator = Validator::make($request->all(), [
+                'title' => ['required', 'string'],
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $validator->errors()
+                ]);
+            }
+
+            $title = $request->input('title');
+            $status = $request->input('status');
+
+            $task->title = $title;
+            $task->status = $status;
+            // $task->user_id = $userId;
+
+            $task->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Task ' . $id . ' updated successfully'
+            ], 200);
+        } catch (\Exception $exception) {
+            Log::error('Updating task ' . $exception->getMessage());
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Error updating tasks'
+            ], 500);
+        }
     }
 }
