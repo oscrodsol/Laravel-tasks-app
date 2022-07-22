@@ -17,7 +17,7 @@ class TaskController extends Controller
         try {
             // $tasks = Task::query()->where('user_id','=',$userId)->get()->toArray();
 
-            $tasks = User::find($userId)->tasks;
+            $tasks = User::query()->find($userId)->tasks; //One to many 
 
             return response()->json([
                 'success' => true,
@@ -172,6 +172,27 @@ class TaskController extends Controller
                 'success' => true,
                 'message' => 'Task ' . $id . ' updated successfully'
             ], 200);
+        } catch (\Exception $exception) {
+            Log::error('Updating task ' . $exception->getMessage());
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Error updating tasks'
+            ], 500);
+        }
+    }
+
+    public function getUserByIdTask($id){
+        try {
+            $task = Task::query()->find($id);
+
+            $user = $task->user;
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Tasks retrieved successfully',
+                'data' => $user
+            ]);
         } catch (\Exception $exception) {
             Log::error('Updating task ' . $exception->getMessage());
 
