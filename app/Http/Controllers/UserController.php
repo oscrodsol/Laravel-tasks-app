@@ -31,4 +31,25 @@ class UserController extends Controller
             ], 500);
         }
     }
+
+    public function removeSuperAdminRoleToUser($id) {
+        try {
+            $user = User::find($id);
+
+            $user->roles()->detach(self::ROLE_SUPER_ADMIN);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Super admin role removed from user',
+            ]);
+
+        } catch (\Exception $exception) {
+            Log::error('Error removing super admin role from User: ' . $exception->getMessage());
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Error removing super admin role from User'
+            ], 500);
+        }
+    }
 }
