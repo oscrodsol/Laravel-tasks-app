@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\TaskController;
 use Illuminate\Http\Request;
@@ -29,4 +30,8 @@ Route::group(["middleware" => "jwt.auth"] , function() {
     Route::delete('/tasks/{id}', [TaskController::class, 'deleteTaskById']);
     Route::put('/tasks/{id}', [TaskController::class, 'modifyTaskById']);
     Route::get('/user/task/{id}', [TaskController::class, 'getUserByIdTask']);
+});
+
+Route::group(["middleware" => "jwt.auth"] , function() {
+    Route::post('/user/super_admin/{id}', [UserController::class, 'addSuperAdminRoleToUser']);
 });

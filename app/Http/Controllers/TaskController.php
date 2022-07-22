@@ -87,7 +87,7 @@ class TaskController extends Controller
 
         $userId = auth()->user()->id;
         try {
-            $tasks = Task::query()->findOrFail($userId)->where('user_id',$userId)->where('id',$id)->get()->toArray();
+            $tasks = Task::query()->findOrFail($userId)->where('user_id', $userId)->where('id', $id)->get()->toArray();
 
             return response()->json([
                 'success' => true,
@@ -109,7 +109,7 @@ class TaskController extends Controller
         try {
             Log::info('Delete task with the id ' . $id);
 
-            $task = Task::find($id)->where('id',$id)->where('user_id',$userId);
+            $task = Task::find($id)->where('id', $id)->where('user_id', $userId);
 
             if (!$task) {
                 return response()->json([
@@ -117,7 +117,7 @@ class TaskController extends Controller
                     'message' => "The task doesn't exist"
                 ], 200);
             }
-            
+
             $task->delete();
 
             return response()->json([
@@ -132,7 +132,6 @@ class TaskController extends Controller
                 'message' => 'Error deleting tasks'
             ], 500);
         }
-        
     }
 
     public function modifyTaskById(Request $request, $id)
@@ -144,7 +143,7 @@ class TaskController extends Controller
 
             // $task = Task::find($id)->where('id','=',$id)->where('user_id','=',$userId);
 
-            $task = Task::query()->where('id','=',$id)->where('user_id','=',$userId)->first();
+            $task = Task::query()->where('id', '=', $id)->where('user_id', '=', $userId)->first();
 
             // dd($task);
 
@@ -182,7 +181,8 @@ class TaskController extends Controller
         }
     }
 
-    public function getUserByIdTask($id){
+    public function getUserByIdTask($id)
+    {
         try {
             $task = Task::query()->find($id);
 
